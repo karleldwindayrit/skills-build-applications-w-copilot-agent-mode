@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getApiBaseUrl } from '../utils/api';
+import { getApiEndpoint } from '../utils/api';
 
 function Activities() {
   const [activities, setActivities] = useState([]);
@@ -9,7 +9,7 @@ function Activities() {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await fetch(`${getApiBaseUrl()}/api/activities`);
+        const response = await fetch(getApiEndpoint('/api/activities'));
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }

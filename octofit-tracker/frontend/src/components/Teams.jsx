@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getApiBaseUrl } from '../utils/api';
+import { getApiEndpoint } from '../utils/api';
 
 function Teams() {
   const [teams, setTeams] = useState([]);
@@ -9,7 +9,7 @@ function Teams() {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(`${getApiBaseUrl()}/api/teams`);
+        const response = await fetch(getApiEndpoint('/api/teams'));
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }
