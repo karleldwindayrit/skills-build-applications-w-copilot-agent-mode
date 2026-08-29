@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getApiEndpoint } from '../utils/api';
+import { getApiBaseUrl, normalizeApiResponse } from '../utils/api';
 
 function Workouts() {
   const [workouts, setWorkouts] = useState([]);
@@ -9,16 +9,15 @@ function Workouts() {
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const response = await fetch(getApiEndpoint('/api/workouts'));
+        const response = await fetch(`${getApiBaseUrl()}/api/workouts`);
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }
 
         const payload = await response.json();
-        const items = Array.isArray(payload) ? payload : payload.results || payload.data || [];
-        setWorkouts(items);
+        setWorkouts(normalizeApiResponse(payload));
       } catch (err) {
-        setError(err.message || 'Failed to load workouts');
+        setError(err.message || 'Unable to load workouts.');
       } finally {
         setLoading(false);
       }
@@ -28,31 +27,47 @@ function Workouts() {
   }, []);
 
   if (loading) {
-    return <div className="alert alert-light">Loading workouts...</div>;
+    return <div className="container py-5"><div className="loading-box">Loading workouts…</div></div>;
   }
 
   if (error) {
-    return <div className="alert alert-danger">{error}</div>;
+    return <div className="container py-5"><div className="error-box">{error}</div></div>;
   }
 
   return (
-    <div className="card shadow-sm border-0 rounded-4 p-4">
-      <h2 className="mb-3">Workouts</h2>
-      <div className="row g-3">
-        {workouts.map((workout) => (
-          <div key={workout.id ?? workout._id ?? workout.title} className="col-md-6 col-xl-4">
-            <div className="border rounded-4 p-3 h-100">
-              <div className="d-flex justify-content-between align-items-start mb-2">
-                <h4 className="mb-0">{workout.title}</h4>
-                <span className="badge text-bg-light text-dark">{workout.difficulty}</span>
-              </div>
-              <div className="text-muted mb-1">Focus: {workout.focus}</div>
-              <div className="fw-semibold">{workout.durationMinutes} min</div>
-            </div>
+    <main className="container py-5">
+      <div className="card content-card shadow-sm rounded-4 p-4">
+        <h2 className="mb-4">Workouts</h2>
+        {workouts.length === 0 ? (
+          <div className="empty-box">No workouts available.</div>
+        ) : (
+          <div className="table-responsive">
+            <table className="table align-middle">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Focus</th>
+                  <th>Duration</th>
+                  <th>Difficulty</th>
+                </tr>
+              </thead>
+              <tbody>
+                {workouts.map((workout) => (
+                  <tr key={workout.id ?? workout._id ?? workout.title}>
+                    <td>{workout.id}</td>
+                    <td>{workout.title}</td>
+                    <td>{workout.focus}</td>
+                    <td>{workout.durationMinutes} min</td>
+                    <td>{workout.difficulty}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ))}
+        )}
       </div>
-    </div>
+    </main>
   );
 }
 

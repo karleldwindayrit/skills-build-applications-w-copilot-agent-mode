@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getApiEndpoint } from '../utils/api';
+import { getApiBaseUrl, normalizeApiResponse } from '../utils/api';
 
 function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -9,16 +9,15 @@ function Leaderboard() {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const response = await fetch(getApiEndpoint('/api/leaderboard'));
+        const response = await fetch(`${getApiBaseUrl()}/api/leaderboard`);
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }
 
         const payload = await response.json();
-        const items = Array.isArray(payload) ? payload : payload.results || payload.data || [];
-        setLeaderboard(items);
+        setLeaderboard(normalizeApiResponse(payload));
       } catch (err) {
-        setError(err.message || 'Failed to load leaderboard');
+        setError(err.message || 'Unable to load leaderboard.');
       } finally {
         setLoading(false);
       }
@@ -28,29 +27,45 @@ function Leaderboard() {
   }, []);
 
   if (loading) {
-    return <div className="alert alert-light">Loading leaderboard...</div>;
+    return <div className="container py-5"><div className="loading-box">Loading leaderboard…</div></div>;
   }
 
   if (error) {
-    return <div className="alert alert-danger">{error}</div>;
+    return <div className="container py-5"><div className="error-box">{error}</div></div>;
   }
 
   return (
-    <div className="card shadow-sm border-0 rounded-4 p-4">
-      <h2 className="mb-3">Leaderboard</h2>
-      <div className="list-group">
-        {leaderboard.map((entry) => (
-          <div key={entry.rank ?? entry.name} className="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-              <span className="badge text-bg-primary me-2">#{entry.rank}</span>
-              <strong>{entry.name}</strong>
-              <div className="text-muted small">{entry.team}</div>
-            </div>
-            <span className="fw-bold">{entry.points} pts</span>
+    <main className="container py-5">
+      <div className="card content-card shadow-sm rounded-4 p-4">
+        <h2 className="mb-4">Leaderboard</h2>
+        {leaderboard.length === 0 ? (
+          <div className="empty-box">No leaderboard entries yet.</div>
+        ) : (
+          <div className="table-responsive">
+            <table className="table align-middle">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Team</th>
+                  <th>Points</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leaderboard.map((entry) => (
+                  <tr key={entry.rank ?? entry.name}>
+                    <td>#{entry.rank}</td>
+                    <td>{entry.name}</td>
+                    <td>{entry.team}</td>
+                    <td>{entry.points}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ))}
+        )}
       </div>
-    </div>
+    </main>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getApiEndpoint } from '../utils/api';
+import { getApiBaseUrl, normalizeApiResponse } from '../utils/api';
 
 function Teams() {
   const [teams, setTeams] = useState([]);
@@ -9,16 +9,15 @@ function Teams() {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(getApiEndpoint('/api/teams'));
+        const response = await fetch(`${getApiBaseUrl()}/api/teams`);
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }
 
         const payload = await response.json();
-        const items = Array.isArray(payload) ? payload : payload.results || payload.data || [];
-        setTeams(items);
+        setTeams(normalizeApiResponse(payload));
       } catch (err) {
-        setError(err.message || 'Failed to load teams');
+        setError(err.message || 'Unable to load teams.');
       } finally {
         setLoading(false);
       }
@@ -28,28 +27,45 @@ function Teams() {
   }, []);
 
   if (loading) {
-    return <div className="alert alert-light">Loading teams...</div>;
+    return <div className="container py-5"><div className="loading-box">Loading teams…</div></div>;
   }
 
   if (error) {
-    return <div className="alert alert-danger">{error}</div>;
+    return <div className="container py-5"><div className="error-box">{error}</div></div>;
   }
 
   return (
-    <div className="card shadow-sm border-0 rounded-4 p-4">
-      <h2 className="mb-3">Teams</h2>
-      <div className="row g-3">
-        {teams.map((team) => (
-          <div key={team.id ?? team._id ?? team.name} className="col-md-6 col-xl-4">
-            <div className="border rounded-4 p-3 h-100">
-              <h4>{team.name}</h4>
-              <p className="text-muted mb-2">{team.city}</p>
-              <div className="fw-bold text-primary">{team.points} pts</div>
-            </div>
+    <main className="container py-5">
+      <div className="card content-card shadow-sm rounded-4 p-4">
+        <h2 className="mb-4">Teams</h2>
+        {teams.length === 0 ? (
+          <div className="empty-box">No teams available.</div>
+        ) : (
+          <div className="table-responsive">
+            <table className="table align-middle">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>City</th>
+                  <th>Points</th>
+                </tr>
+              </thead>
+              <tbody>
+                {teams.map((team) => (
+                  <tr key={team.id ?? team._id ?? team.name}>
+                    <td>{team.id}</td>
+                    <td>{team.name}</td>
+                    <td>{team.city}</td>
+                    <td>{team.points}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ))}
+        )}
       </div>
-    </div>
+    </main>
   );
 }
 
