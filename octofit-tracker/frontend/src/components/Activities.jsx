@@ -9,7 +9,9 @@ function Activities() {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await fetch(`${getApiBaseUrl()}/api/activities`);
+        const endpoint = `${getApiBaseUrl()}/api/activities`;
+        const response = await fetch(endpoint);
+
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }

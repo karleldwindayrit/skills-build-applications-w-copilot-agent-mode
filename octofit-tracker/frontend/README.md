@@ -1,16 +1,28 @@
-# React + Vite
+# Octofit Tracker frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This Vite app talks to the Octofit API backend. The browser must know the GitHub Codespace name so it can call the public forwarded port in GitHub Codespaces.
 
-Currently, two official plugins are available:
+## Required environment variable
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Create a `.env.local` file in this folder with the following value:
 
-## React Compiler
+```bash
+VITE_CODESPACE_NAME=your-codespace-name
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+If `VITE_CODESPACE_NAME` is not defined, the app falls back to `http://localhost:8000` so local development still works.
 
-## Expanding the Oxlint configuration
+When the codespace name is defined, requests use the public Codespaces URL pattern:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+```text
+https://${VITE_CODESPACE_NAME}-8000.app.github.dev/api/[component]/
+```
+
+## Local development
+
+```bash
+npm install
+npm run dev -- --host 0.0.0.0
+```
+
+The app expects the backend API to be available on port 8000.

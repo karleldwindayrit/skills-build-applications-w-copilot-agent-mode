@@ -47,13 +47,14 @@ function App() {
     <div className="app-shell">
       <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm sticky-top">
         <div className="container">
-          <NavLink className="navbar-brand fw-bold text-primary" to="/">
+          <NavLink className="navbar-brand fw-bold text-primary" end to="/">
             Octofit
           </NavLink>
           <div className="navbar-nav d-flex flex-row flex-wrap gap-2">
             {navItems.map(({ to, label }) => (
               <NavLink
                 key={to}
+                end={to === '/'}
                 to={to}
                 className={({ isActive }) =>
                   `nav-link px-3 py-2 rounded-pill ${isActive ? 'active bg-primary text-white' : 'text-dark'}`

@@ -9,7 +9,9 @@ function Workouts() {
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const response = await fetch(`${getApiBaseUrl()}/api/workouts`);
+        const endpoint = `${getApiBaseUrl()}/api/workouts`;
+        const response = await fetch(endpoint);
+
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }

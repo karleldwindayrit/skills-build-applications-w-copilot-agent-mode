@@ -1,8 +1,8 @@
 export function getApiBaseUrl() {
-  const codespaceName = import.meta.env.VITE_CODESPACE_NAME;
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
 
-  if (codespaceName && codespaceName.trim() !== '') {
-    return `https://${codespaceName.trim()}-8000.app.github.dev`;
+  if (codespaceName) {
+    return `https://${codespaceName}-8000.app.github.dev`;
   }
 
   return 'http://localhost:8000';
@@ -13,12 +13,14 @@ export function normalizeApiResponse(payload) {
     return payload;
   }
 
-  if (payload && Array.isArray(payload.results)) {
-    return payload.results;
-  }
+  if (payload && typeof payload === 'object') {
+    const nestedCollections = [payload.results, payload.data, payload.items, payload.records];
 
-  if (payload && Array.isArray(payload.data)) {
-    return payload.data;
+    for (const collection of nestedCollections) {
+      if (Array.isArray(collection)) {
+        return collection;
+      }
+    }
   }
 
   return [];
