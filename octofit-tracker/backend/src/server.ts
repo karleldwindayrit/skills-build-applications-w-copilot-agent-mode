@@ -10,6 +10,7 @@ dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT || 8000);
+const host = process.env.HOST || '0.0.0.0';
 
 app.use(cors());
 app.use(express.json());
@@ -55,7 +56,7 @@ const startServer = async () => {
     console.warn('MongoDB not available, continuing without database connection:', error);
   }
 
-  app.listen(port, () => {
+  app.listen(port, host, () => {
     console.log(`Server running on http://localhost:${port}`);
     console.log(`API base URL: ${apiBaseUrl}`);
   });
