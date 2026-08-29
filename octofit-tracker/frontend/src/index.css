@@ -1,0 +1,62 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f3f6ff 0%, #ebfaf7 100%);
+  font-family: Inter, 'Segoe UI', sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.hero-card {
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.eyebrow {
+  letter-spacing: 0.2rem;
+  color: #2563eb;
+}
+
+.content-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+}
+
+.table thead th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08rem;
+  color: #64748b;
+}
+
+.nav-link.active {
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.15);
+}
+
+.loading-box,
+.empty-box,
+.error-box {
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.empty-box {
+  color: #475569;
+}
+
+.error-box {
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  background: rgba(254, 242, 242, 0.8);
+  color: #991b1b;
+}
+
