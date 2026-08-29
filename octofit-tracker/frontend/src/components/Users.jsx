@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getApiBaseUrl, normalizeApiResponse } from '../utils/api';
+import { normalizeApiResponse } from '../utils/api';
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -9,7 +9,10 @@ function Users() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const endpoint = `${getApiBaseUrl()}/api/users`;
+        const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
+        const endpoint = codespaceName
+          ? `https://${codespaceName}-8000.app.github.dev/api/users`
+          : 'http://localhost:8000/api/users';
         const response = await fetch(endpoint);
 
         if (!response.ok) {

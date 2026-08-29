@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getApiBaseUrl, normalizeApiResponse } from '../utils/api';
+import { normalizeApiResponse } from '../utils/api';
 
 function Activities() {
   const [activities, setActivities] = useState([]);
@@ -9,7 +9,10 @@ function Activities() {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const endpoint = `${getApiBaseUrl()}/api/activities`;
+        const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
+        const endpoint = codespaceName
+          ? `https://${codespaceName}-8000.app.github.dev/api/activities`
+          : 'http://localhost:8000/api/activities';
         const response = await fetch(endpoint);
 
         if (!response.ok) {

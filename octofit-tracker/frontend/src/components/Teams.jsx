@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getApiBaseUrl, normalizeApiResponse } from '../utils/api';
+import { normalizeApiResponse } from '../utils/api';
 
 function Teams() {
   const [teams, setTeams] = useState([]);
@@ -9,7 +9,10 @@ function Teams() {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const endpoint = `${getApiBaseUrl()}/api/teams`;
+        const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
+        const endpoint = codespaceName
+          ? `https://${codespaceName}-8000.app.github.dev/api/teams`
+          : 'http://localhost:8000/api/teams';
         const response = await fetch(endpoint);
 
         if (!response.ok) {

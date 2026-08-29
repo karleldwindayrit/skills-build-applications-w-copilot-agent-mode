@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getApiBaseUrl, normalizeApiResponse } from '../utils/api';
+import { normalizeApiResponse } from '../utils/api';
 
 function Workouts() {
   const [workouts, setWorkouts] = useState([]);
@@ -9,7 +9,10 @@ function Workouts() {
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const endpoint = `${getApiBaseUrl()}/api/workouts`;
+        const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
+        const endpoint = codespaceName
+          ? `https://${codespaceName}-8000.app.github.dev/api/workouts`
+          : 'http://localhost:8000/api/workouts';
         const response = await fetch(endpoint);
 
         if (!response.ok) {
