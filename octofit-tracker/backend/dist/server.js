@@ -1,10 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { apiBaseUrl } from './config/api.js';
 import { connectDatabase } from './config/database.js';
 import { User, Team, Activity, LeaderboardEntry, Workout } from './models/index.js';
 dotenv.config();
+const codespaceName = process.env.CODESPACE_NAME;
+const apiBaseUrl = codespaceName
+    ? `https://${codespaceName}-8000.app.github.dev`
+    : 'http://localhost:8000';
 const app = express();
 const port = Number(process.env.PORT || 8000);
 const host = process.env.HOST || '0.0.0.0';
